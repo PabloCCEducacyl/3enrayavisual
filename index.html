@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3enraya</title>
+    <!--<script src="3enraya.js"></script>-->
+    <style>
+        canvas{
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        //juego();
+        function dibujar() {
+            const canvas = document.getElementById('juego');
+            if (canvas.getContext()){
+                const ctx = canvas.getContext("2d");
+                
+                ctx.fillStyle = "rgb(200 0 0)";
+                ctx.fillRect(10, 10, 50, 50);
+
+                ctx.fillStyle = "rgb(0 0 200 / 50%)";
+                ctx.fillRect(30, 30, 50, 50);
+            }
+        }
+        dibujar()
+        </script>
+</head>
+<body>
+    <canvas id="juego" width="500" height="500"></canvas>
+</body>
+</html>
