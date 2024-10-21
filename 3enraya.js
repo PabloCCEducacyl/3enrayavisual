@@ -1,51 +1,71 @@
-
-
-function juego(){
-    tablero = 
-    [
-        ["#","#","#"],
-        ["#","#","#"],
-        ["#","#","#"],
-    ]
-
-
+document.addEventListener("DOMContentLoaded", () => {
+    const casillas = document.querySelectorAll(".casilla");
+    const datos_tablero = [
+        [null, null, null],
+        [null, null, null],
+        [null, null, null],
+    ];
     let juego = true;
     let turno = 1;
-    let posicionX = 0, posicionY = 0
-    while(juego){
-        do{
-            [posicionX, posicionY] = preguntaJugador(turno).split(",");
-            console.log(posicionX, posicionY)
-        } while(!validarPosicion(posicionX, posicionY))
-        if(turno == 1){
-            console.log(posicionX)
-            tablero[posicionX-1][posicionY-1] = "X"
-            turno = 2
-        } else {
-            tablero[posicionX-1][posicionY-1] = "O"
-            turno = 1
-        }
-        imprimirtablero()
-    }
-    function validarPosicion(posicionX, posicionY){
-        if(posicionX < 1 || posicionX > 3 || posicionY < 1 || posicionY > 3){
-            return false
-        } else if((tablero[posicionX-1][posicionY-1] == "X" || tablero[posicionX-1][posicionY-1] == "O")){
-            return false
-        } else {
-            return true
-        }
-    }
-    function preguntaJugador(turno){
-        return prompt("Jugador " + turno + ", que casilla quieres marcar? (x,y)");
-    }
-    
-    function imprimirtablero(){
-        tablero_string = ""
-        tablero.forEach(linea => {
-            tablero_string += linea + "\n"
+    const tablero = document.getElementById("tablero");
+    const status = document.getElementById("status");
+    status.textContent = `Turno: Jugador ${turno}`;
+    casillas.forEach(celda => {
+        celda.addEventListener("click", () => {
+            if (!juego) {
+                return 0
+            }
+            const x = celda.getAttribute("x");
+            const y = celda.getAttribute("y");
+            
+            if (validarPosicion(x, y)) {
+                if (turno == 1) {
+                    datos_tablero[x][y] = "X";
+                    turno = 2;
+                } else {
+                    datos_tablero[x][y] = "O";
+                    turno = 1;
+                }
+            }
+            pintarTablero(tablero);
+            if (checkVictoria()) {
+                if(turno == 1) {
+                    turno = 2;
+                } else { //si no pone que ha ganado el del turno siguiente
+                    turno = 1;
+                }
+                setTimeout(() => {
+                    status.textContent = `Jugador ${turno} gana!`;
+                }, 10);
+                juego = false;
+            }
+            if (!tablero.flat().includes(null)){
+                setTimeout(() => {
+                    status.textContent = "Empate!";
+                }, 10);
+                juego = false;
+            }
+            if(juego) {
+                status.textContent = `Turno: Jugador ${turno}`;
+            }
         });
-        alert(tablero_string)
+    });
+
+    function validarPosicion(x, y) {
+        return tablero[x][y] === null;
     }
-    
-}
+
+    function checkVictoria() {
+        for (let i = 0; i < 3; i++) {
+            if (tablero[i][0] && tablero[i][0] === tablero[i][1] && tablero[i][1] === tablero[i][2]){
+                return true;
+            }    
+            if (tablero[0][i] && tablero[0][i] === tablero[1][i] && tablero[1][i] === tablero[2][i]){
+                return true;
+            }
+        }
+        if (tablero[0][0] && tablero[0][0] === tablero[1][1] && tablero[1][1] === tablero[2][2]) return true;
+        if (tablero[0][2] && tablero[0][2] === tablero[1][1] && tablero[1][1] === tablero[2][0]) return true;
+        return false;
+    }
+});
